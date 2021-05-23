@@ -10,6 +10,8 @@ pygame.display.set_caption("It's Raining")
 CHARATER_IMG = pygame.image.load(os.path.join('images', 'char.png'))
 #CHARATER_IMG_RESIZE = pygame.transform.scale(CHARATER_IMG, (100,100))
 #CHARATER_IMG_ROTATE = pygame.transform.rotate(pygame.transform.scale(CHARATER_IMG, (100,100)), 180)
+BG_IMG = pygame.image.load(os.path.join('images', 'bg.png'))
+
 
 RAIN_IMG = pygame.image.load(os.path.join('images', 'droplet_rework.png'))
 RAIN_IMG_RESIZE = pygame.transform.scale(RAIN_IMG, (20,40))
@@ -19,11 +21,9 @@ Turqyoise = (48,213,200)
 FPS = 60
 DROP_RATE = 5
 score = 0
-NUMBER_OF_RAINS = 5
+NUMBER_OF_RAINS = 10
+RAIN_POSITION = [-50,-25, 0]
 multi_rain = []
-
-
-
 
 
 
@@ -34,30 +34,33 @@ def spawn_rains(rain, character):
     #rain_tracker = pygame.draw.rect(WIN, (255,0,0),rain, 1)
     #WIN.blit(RAIN_IMG_RESIZE, (rain.x, rain.y))
 
-    for i in range(NUMBER_OF_RAINS):
-        y_value = random.randint(10,900)
-        multi_rain.append(pygame.Rect(y_value,50,20,38))
-
        
     for i in range (NUMBER_OF_RAINS):
 
-        rain_tracker = pygame.draw.rect(WIN, (255,0,0),multi_rain[i], 1)             
-        WIN.blit(RAIN_IMG_RESIZE, multi_rain[i])
-        multi_rain[i].y+=5
+        y_value = random.randint(10,900)
+        x_value = random.choice(RAIN_POSITION)
+        multi_rain.append(pygame.Rect(y_value,x_value,20,38))
+
+        if multi_rain[i].y == 425:
+            multi_rain[i].y = random.choice(RAIN_POSITION)
+            multi_rain[i].x = random.randint(10,900)
+            score+=5
 
 
-        if rain.y == 425:
-            score+=10
-
-        if rain.colliderect(character):
+        if multi_rain[i].colliderect(character):
             score-=1
     
+        #rain_tracker = pygame.draw.rect(WIN, (255,0,0),multi_rain[i], 1)             
+        WIN.blit(RAIN_IMG_RESIZE, multi_rain[i])
+        multi_rain[i].y+=5
     
+
+
 
 def display_score():
 
     pygame.font.init()
-    font = pygame.font.SysFont('comicsans', 30)
+    font = pygame.font.SysFont('calibri', 30)
     display_score = font.render("Score: {0}".format(score), 1, (255,255,255)) 
     WIN.blit(display_score, (10, 10))
 
@@ -65,6 +68,7 @@ def display_score():
 
 def draw_character(character):    
 
+    WIN.blit(BG_IMG, (0,0))
     WIN.blit(CHARATER_IMG, (character.x, character.y))
     char_rect = CHARATER_IMG.get_rect()
     #char_tracker = pygame.draw.rect(WIN, (255,0,0),character, 1)    
@@ -96,7 +100,7 @@ def main():
 
 
 
-        WIN.fill((Turqyoise))
+        #WIN.fill((Turqyoise))
         keys_pressed = pygame.key.get_pressed()
         draw_character(character)
         spawn_rains(rain, character)
