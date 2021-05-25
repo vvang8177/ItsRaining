@@ -1,8 +1,8 @@
 import pygame
+from pygame import mixer
 import os
 import random
 import time
-
 
 WIDTH, HEIGHT = 900, 500
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -12,18 +12,25 @@ CHARATER_IMG = pygame.image.load(os.path.join('images', 'char.png'))
 #CHARATER_IMG_ROTATE = pygame.transform.rotate(pygame.transform.scale(CHARATER_IMG, (100,100)), 180)
 BG_IMG = pygame.image.load(os.path.join('images', 'bg.png'))
 
-
 RAIN_IMG = pygame.image.load(os.path.join('images', 'droplet_rework.png'))
 RAIN_IMG_RESIZE = pygame.transform.scale(RAIN_IMG, (20,40))
 
+mixer.init()
+RAIN_AUDIO = mixer.Sound('raindrop.wav')
+KID_AUDIO = pygame.mixer.Sound('kidslaugh.wav')
+THUNDER_AUDIO = mixer.Sound('thunder.wav')
+KID_AUDIO.play(-1)
+THUNDER_AUDIO.play(-1)
+THUNDER_AUDIO.set_volume(0.6)
 
 Turqyoise = (48,213,200)
 FPS = 60
 DROP_RATE = 5
 score = 0
 NUMBER_OF_RAINS = 10
-RAIN_POSITION = [-50,-25, 0]
+RAIN_POSITION = [-50,-25,-75, 0]
 multi_rain = []
+
 
 
 
@@ -44,11 +51,12 @@ def spawn_rains(rain, character):
         if multi_rain[i].y == 425:
             multi_rain[i].y = random.choice(RAIN_POSITION)
             multi_rain[i].x = random.randint(10,900)
+            RAIN_AUDIO.play()
             score+=5
 
 
         if multi_rain[i].colliderect(character):
-            score-=1
+            score-=3
     
         #rain_tracker = pygame.draw.rect(WIN, (255,0,0),multi_rain[i], 1)             
         WIN.blit(RAIN_IMG_RESIZE, multi_rain[i])
@@ -99,8 +107,6 @@ def main():
 
 
 
-
-        #WIN.fill((Turqyoise))
         keys_pressed = pygame.key.get_pressed()
         draw_character(character)
         spawn_rains(rain, character)
