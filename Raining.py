@@ -56,7 +56,8 @@ def spawn_rains(rain, character):
 
 
         if multi_rain[i].colliderect(character):
-            score-=3
+            multi_rain.remove(multi_rain[i])
+            score-=25
     
         #rain_tracker = pygame.draw.rect(WIN, (255,0,0),multi_rain[i], 1)             
         WIN.blit(RAIN_IMG_RESIZE, multi_rain[i])
@@ -76,6 +77,8 @@ def display_score():
 
 def draw_character(character):    
 
+
+
     WIN.blit(BG_IMG, (0,0))
     WIN.blit(CHARATER_IMG, (character.x, character.y))
     char_rect = CHARATER_IMG.get_rect()
@@ -85,13 +88,13 @@ def draw_character(character):
 
 def character_control(keys_pressed, character):
 
+
     if keys_pressed[pygame.K_a] and character.x - 10 > 0:
         character.x -= 10
     if keys_pressed[pygame.K_d] and character.x + 10 < 800:
         character.x += 10
-
-
-
+    
+        
 def main():
 
     character = pygame.Rect(WIDTH/2,350,100,110)
